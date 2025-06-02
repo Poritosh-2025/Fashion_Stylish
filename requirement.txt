@@ -1,0 +1,9 @@
+python-dotenv
+django
+pillow
+openai
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+djangorestframework-simplejwt
+openai==1.35.13 
+httpx==0.27.0
