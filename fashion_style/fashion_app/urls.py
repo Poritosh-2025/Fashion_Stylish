@@ -7,6 +7,7 @@ urlpatterns = [
     path('verify-otp/', views.OTPVerificationView.as_view(), name='verify_otp'),
     path('resend-otp/', views.ResendOTPView.as_view(), name='resend_otp'),
     path('login/', views.UserLoginView.as_view(), name='user_login'),
+    path('register-superadmin/', views.CreateSuperuserView.as_view(), name='superadmin_register'),
     
     # Password Reset URLs
     path('password-reset-request/', views.PasswordResetRequestView.as_view(), name='password_reset_request'),

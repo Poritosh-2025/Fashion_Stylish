@@ -8,7 +8,8 @@ from datetime import timedelta
 from .models import User, OTP
 from .serializers import *
 from .utils import send_otp_email
-
+from rest_framework.permissions import AllowAny  # Change this based on your security needs
+from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -273,3 +274,64 @@ class AdminDeleteView(generics.DestroyAPIView):
         return Response({
             'message': 'Administrator account deleted successfully.'
         }, status=status.HTTP_200_OK)
+    
+class CreateSuperuserView(APIView):
+    permission_classes = [AllowAny]  # Be careful with this in production
+    
+    def post(self, request):
+        # Extract data from request
+        email = request.data.get('email')
+        phone_number = request.data.get('phone_number')
+        password = request.data.get('password')
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        
+        # Validation
+        if not email or not phone_number or not password:
+            return Response({
+                'error': 'Email, phone_number, and password are required.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if user already exists
+        if User.objects.filter(email=email).exists():
+            return Response({
+                'error': 'User with this email already exists.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
+        if User.objects.filter(phone_number=phone_number).exists():
+            return Response({
+                'error': 'User with this phone number already exists.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Create superuser
+            user = User.objects.create_user(
+                email=email,
+                phone_number=phone_number,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                role='superadmin',
+                is_verified=True,
+                is_active=True,
+                is_staff=True,
+                is_superuser=True
+            )
+            
+            return Response({
+                'message': 'Superuser created successfully!',
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'phone_number': user.phone_number,
+                    'full_name': user.full_name,
+                    'role': user.role,
+                    'is_verified': user.is_verified,
+                    'is_active': user.is_active
+                }
+            }, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response({
+                'error': f'Error creating superuser: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

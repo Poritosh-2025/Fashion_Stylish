@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     #my apps
     'fashion_app',
-    'ai_stylist',
+    'ai_stylist_app', # AI
 
 ]
 
@@ -158,7 +158,9 @@ SIMPLE_JWT = {
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'AUTH_TOKEN_CLASSES': (
+        'rest_framework_simplejwt.tokens.AccessToken',
+        ),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 # CORS Settings

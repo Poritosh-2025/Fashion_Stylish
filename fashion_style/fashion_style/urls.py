@@ -21,5 +21,7 @@ from django.conf.urls.static import static # AI
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('fashion_app.urls')),
-    path('api/ai/', include('ai_stylist.urls')), # AI
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/ai/', include('ai_stylist_app.urls')), # AI
+] 
+if settings.DEBUG:
+ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

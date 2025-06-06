@@ -84,13 +84,22 @@ class UserLoginSerializer(serializers.Serializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.ReadOnlyField()
+    conversation_count = serializers.SerializerMethodField() # AI
+    outfit_analysis_count = serializers.SerializerMethodField() # AI
     
     class Meta:
         model = User
         fields = ['id', 'email', 'phone_number', 'first_name', 'last_name', 
                  'full_name', 'profile_image', 'date_created', 'last_active', 
-                 'is_anonymous', 'conversation', 'outfits']
-
+                 'is_anonymous', 'conversation', 'outfits','conversation_count', 
+                 'outfit_analysis_count']
+    # AI
+    def get_conversation_count(self, obj):
+        return obj.get_conversation_history().count()
+    
+    def get_outfit_analysis_count(self, obj):
+        return obj.get_outfit_analyses().count()    
+    
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True, required=False)
     

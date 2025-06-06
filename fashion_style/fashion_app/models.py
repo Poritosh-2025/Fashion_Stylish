@@ -58,10 +58,24 @@ class User(AbstractUser):
 
     @property
     def full_name(self):
-        return f"{self.first_name} {self.last_name}".strip() or "Anonymous"
+        return f"{self.first_name} {self.last_name}".strip() or "Anonymous" 
     
     def __str__(self):
         return self.email
+    
+    # AI
+    def get_conversation_history(self):
+        """Get user's conversation history from AI stylist"""
+        from ai_stylist_app.models import SessionHistory
+        return SessionHistory.objects.filter(user_id=str(self.id)).order_by('timestamp')
+
+    def get_outfit_analyses(self):
+            """Get user's outfit analysis history"""
+            from ai_stylist_app.models import SessionHistory
+            return SessionHistory.objects.filter(
+                user_id=str(self.id), 
+                image__isnull=False
+            ).order_by('timestamp')
 
 class OTP(models.Model):
     OTP_TYPES = [
@@ -88,3 +102,17 @@ class OTP(models.Model):
     
     def __str__(self):
         return f"{self.email} - {self.otp_code}"
+    
+
+# def get_conversation_history(self):
+#     """Get user's conversation history from AI stylist"""
+#     from ai_stylist_app.models import SessionHistory
+#     return SessionHistory.objects.filter(user_id=str(self.id)).order_by('timestamp')
+
+# def get_outfit_analyses(self):
+#     """Get user's outfit analysis history"""
+#     from ai_stylist_app.models import SessionHistory
+#     return SessionHistory.objects.filter(
+#         user_id=str(self.id), 
+#         image__isnull=False
+#     ).order_by('timestamp')
